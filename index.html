@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title>My Aframe</title>
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+        <meta charset="utf-8">
+        <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+        <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+        <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+        <script src="https://unpkg.com/super-hands@3.0.0/dist/super-hands.min.js"></script>
+
+        <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+    </head>
+
+    <body>
+        
+        <a-scene renderer='precision: mediump' insepector-plugin-recast>
+        <!--    <a-entity environment="preset: forest; dressingAmount: 500"></a-entity> -->
+          
+        <a-assets> <img id="floor" src="https://images.unsplash.com/32/Mc8kW4x9Q3aRR3RkP5Im_IMG_4417.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" crossorigin="anonymous">
+            <img id="wall" src="https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80" crossorigin="anonymous">    
+            <img id="ceil" src="https://images.unsplash.com/photo-1482455480256-f49706deb391?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" crossorigin="anonymous">
+            <img id="image" src="https://images.unsplash.com/photo-1523647385056-b77a066a9d09?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" crossorigin="anonymous">
+            
+        </a-assets>
+        
+            <a-curvedimage
+            material="src: #ceil; repeat:1 8; transparent: true;"
+            radius="-5"
+            width="100"
+            height="100"
+            depth="0.8"
+            position="0.1 6.8 -5"
+            rotation="90 0 0"
+            scale="0.8 0.8 0.8"
+            theta-length="200"
+            theta-start="-100" shadow>
+            </a-curvedimage>
+
+
+            <a-box
+            material="src: #wall; repeat:12 1; transparent: true;"
+            width="80"
+            height="8"
+            depth="1"
+            position="-4 3 -5"
+            rotation="0 90 0" shadow static-body> 
+            </a-box>
+        <!--   <a-image src="#image" position="-3.4 3 -8.5" width="5" height="5" rotation="0 90 0"></a-image>  --> 
+            
+            <a-box
+            material="src: #wall; repeat:12 1; transparent: true;"
+            width="80"
+            height="8"
+            depth="1"
+            position="4 3 -5"
+            
+            rotation="0 90 0" shadow static-body>
+            </a-box>
+            
+          <!--  <a-entity camera look-controls position="0 3 0"></a-entity>   -->
+          <a-entity camera look-controls wasd-controls="acceleration:200" position="0 3 0" fly="false" light="type: ambient"></a-entity>
+
+         <!--   <a-sphere radius="0.5" position="0 3.1 -5" color="green" dynamic-body> </a-sphere>   -->
+            
+
+            <a-box
+            color="#ffb31a"
+            material="src: #floor; repeat:1 20; transparent: true;"
+            width="10"
+            height="80"
+            depth="0.2"
+            position="0 -1.1 -5"
+            rotation="90 0 0" static-body>
+            </a-box> 
+        </a-scene>
+    </body>
+</html>
