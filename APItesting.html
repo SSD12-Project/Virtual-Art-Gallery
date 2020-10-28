@@ -15,12 +15,12 @@
 
         var request = new XMLHttpRequest()
         
-        request.open('GET', 'http://pathgen.herokuapp.com/newpoint/?x=0.2&z=1.3&beta=3.132&length=1.23&gennewbeta=0', true)
+        request.open('GET', 'http://pathgen.herokuapp.com/newpoint?x=0.2&z=1.3&beta=3.132&length=1.23&gennewbeta=1', true)
         
         request.onload = function(){
         var data = JSON.parse(this.response)
             
-            console.log(data)
+        console.log(data)
             
         
         }
