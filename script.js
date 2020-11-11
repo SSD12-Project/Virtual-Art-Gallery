@@ -32,7 +32,7 @@ var sceneEl = document.querySelector('a-scene');
   for(var i=1; i<=3; ++i){
 
     //console.log(i);
-  (function(i){
+  (function(i){     
     //console.log(i);
     var curr = document.createElement('a-box');
   curr.setAttribute('do-something-once-loaded',{mydata:i});
