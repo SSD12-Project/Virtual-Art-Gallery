@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script src="https://unpkg.com/aframe-pardo-collider-component/dist/aframe-pardo-collider-component.min.js"></script>
+        <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+    </head>
+    
+    <body>
+        <script>
+            
+            var col = new ColliderComponent();
+            console.log(col);
+            document.addEventListener("DOMContentLoaded", () => {
+                const box = document.getElementById('js-check-collide');
+                const hiddenBox = document.getElementById('js-hidden-box');
+                //const cam = document.getElementById('person');
+                box.addEventListener('collideStart', () => {
+                    console.log("Collide has started");
+                    hiddenBox.emit('reveal')
+                });
+    
+                box.addEventListener('collideEnd', () => {
+                  console.log("Element has finished collision");
+                })
+                const plane = document.getElementById('js-plane');
+                plane.addEventListener('click', () => {
+                    box.emit('move');
+                   // cam.emit('move');
+                })
+                
+            })
+        </script>   
+    <a-scene>
+        <a-camera >
+            <a-cursor></a-cursor>
+            <a-animation attribute="position" to="-2 2 -1.1" begin="move"></a-animation>
+        </a-camera>
+        <a-box material="color: blue; transparent:true; opacity:0;" id="js-hidden-box" position="0 3 -2">
+            <a-animation attribute="material.opacity" to="1" begin="reveal"></a-animation>
+        </a-box>
+        <!-- Here is where the collider is added -->
+        <a-box material="color: brown;" position="-2 2 -2" collider></a-box>
+        <a-box material="color: red;" position="2 2 -2" collider id="js-check-collide">
+            <a-animation attribute="position" to="-1.1 2 -2" begin="move"></a-animation>
+        </a-box>
+        <!-- Above: Collider -->
+
+        <a-plane width="2" height="1" color="#CCC" side="double" rotation="0 0 0" position="0 1 -4" id="js-plane">
+            <a-text value="Click here to collide" align="center"></a-text>
+        </a-plane>
+        
+    </a-scene>
+    
+
+    </body>
+</html>

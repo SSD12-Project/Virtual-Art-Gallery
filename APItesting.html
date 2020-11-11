@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+    </head>
+
+    
+    <script>
+        
+        $(document).ready(function() {
+            //Initial parameter values
+            var x = 0
+            var z = 0
+            var beta = 1
+            var length = 10
+            var newbeta = 1
+            var response    //For retrieving API response 
+            i=3
+            while (i>0)
+            {
+            $.ajax({
+                url: "http://pathgen.herokuapp.com/newpoint",
+                type: "GET",
+                async: false,
+                data: {
+                    x:x,
+                    z:z,
+                    beta:beta,
+                    length:length,
+                    gennewbeta:newbeta
+
+                },
+                success: function(data) {
+                    response = data
+                    
+                    
+                },
+                error: function(error){
+                    console.log(error)
+                }
+            })
+            i=i-1
+            beta = response.new_beta
+            x = response.new_point[0]
+            z = response.new_point[1]
+            console.log('beta:', beta)
+            console.log('x: ', x)
+            console.log('z:', z)
+            }
+        
+            console.log('beta:', beta)
+            console.log('x: ', x)
+            console.log('z:', z)
+        })
+        
+        
+
+    </script>
+    
+</html>

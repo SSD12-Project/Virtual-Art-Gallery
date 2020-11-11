@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-line-component/dist/aframe-line-component.min.js"></script>
+</head>
+
+
+<!-- <script>
+
+    $(document).ready(function () {
+        //Initial parameter values
+        var x = 0
+        var z = 0
+        var beta = 1
+        var length = 10
+        var newbeta = 1
+        var response;    //For retrieving API response 
+
+        $.ajax({
+            url: "http://pathgen.herokuapp.com/newpoint",
+            type: "GET",
+            async: true,
+            data: {
+                x: x,
+                z: z,
+                beta: beta,
+                length: length,
+                gennewbeta: newbeta
+
+            },
+            success: function (data) {
+                response = data
+
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+
+        beta = response.new_beta
+        x = response.new_point[0]
+        z = response.new_point[1]
+        console.log('beta:', beta)
+        console.log('x: ', x)
+        console.log('z:', z)
+        
+
+    })
+
+
+
+</script> -->
+
+<body>
+    <a-scene>
+        <!-- <a-entity line="start: 0, 1, 0; end: 2 0 -5; color: red"></a-entity>
+        <a-box color="green"></a-box> -->
+    </a-scene>
+    <script>
+        var x1=10
+        var y1 = 1
+        var z1 = 0
+        var x2=-14
+        var y2 = 5
+        var z2 = 0
+
+        $(document).ready(function(){
+            $("a-box").attr("color", "red")
+            $("a-entity").attr("line", "start:"+x1+" "+y1+" "+z1+"; end: "+x2+" "+y2+" "+z2+"; color:green")
+        })
+    </script>
+</body>
+
+</html>
