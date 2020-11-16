@@ -43,10 +43,10 @@
             //console.log(left) 
             a=points[i].x - (left.x*roadwidth*0.5) 
             b=points[i].z - (left.z*roadwidth*0.5) 
-            store_cord(a,b,wall_coor)  
+            store_cord(a,b,wall_coor)  //Left Coordinates
             a=points[i].x + (left.x*roadwidth*0.5) 
             b=points[i].z + (left.z*roadwidth*0.5) 
-            store_cord(a,b,wall_coor)   
+            store_cord(a,b,wall_coor)   //Right Coordinates
         }
         console.log(wall_coor)
     }  
