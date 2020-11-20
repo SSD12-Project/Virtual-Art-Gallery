@@ -1,8 +1,16 @@
 var sceneEl = document.querySelector('a-scene');
 //console.log(sceneEl.querySelector('a-box'));
-  var el = sceneEl.querySelector('#boxer');
-  el.setAttribute('material',{color:'red'});
-
+  var el = sceneEl.querySelector('#camid');
+ // el.setAttribute('material',{color:'red'});
+ /* el.object3D.rotation.set(
+    THREE.Math.degToRad(15),
+    THREE.Math.degToRad(30),
+    THREE.Math.degToRad(90)
+  );
+  el.object3D.rotation.x += Math.PI;*/
+  
+  // With .setAttribute (less recommended).
+ // el.setAttribute('rotation', {x: 90, y: 0, z: 90});
 
   function store_cord(xval,zval,array)
   {
@@ -186,18 +194,19 @@ var sceneEl = document.querySelector('a-scene');
   function build_wall(wall_coor){
 
     console.log('inbuildwall');
-
+    console.log(points[1].x);
+    el.setAttribute('rotation', {x:  1*points[1].x+(180/Math.PI), y: 0, z: 0});
    // console.log(wall_coor[1]['x']);
-    var x1l = (wall_coor[1]['x']+wall_coor[0]['x'])/2;
-    var z1l = (wall_coor[1]['z']+wall_coor[0]['z'])/2;
-    var w1l = Math.sqrt(Math.pow((wall_coor[1]['x']-wall_coor[0]['x']),2) + Math.pow((wall_coor[1]['z']-wall_coor[0]['z']),2));
-    var s1l = (Math.atan((wall_coor[1]['z']-wall_coor[0]['z'])/(wall_coor[1]['x']-wall_coor[0]['x'])))*(180/Math.PI);
+    var x1l = (wall_coor[7]['x']+wall_coor[5]['x'])/2;
+    var z1l = (wall_coor[7]['z']+wall_coor[5]['z'])/2;
+    var w1l = Math.sqrt(Math.pow((wall_coor[7]['x']-wall_coor[5]['x']),2) + Math.pow((wall_coor[7]['z']-wall_coor[5]['z']),2));
+    var s1l = (Math.atan((wall_coor[7]['z']-wall_coor[5]['z'])/(wall_coor[7]['x']-wall_coor[5]['x'])))*(180/Math.PI);
     //var s1l=angle_rot[0]
    
-    var x1r = (wall_coor[2]['x']+wall_coor[0]['x'])/2;
-    var z1r = (wall_coor[2]['z']+wall_coor[0]['z'])/2;
-    var w1r = Math.sqrt(Math.pow((wall_coor[2]['x']-wall_coor[0]['x']),2) + Math.pow((wall_coor[2]['z']-wall_coor[0]['z']),2));
-    var s1r = (Math.atan((wall_coor[2]['z']-wall_coor[0]['z'])/(wall_coor[2]['x']-wall_coor[0]['x'])))*(180/Math.PI);
+    var x1r = (wall_coor[8]['x']+wall_coor[6]['x'])/2;
+    var z1r = (wall_coor[8]['z']+wall_coor[6]['z'])/2;
+    var w1r = Math.sqrt(Math.pow((wall_coor[8]['x']-wall_coor[6]['x']),2) + Math.pow((wall_coor[8]['z']-wall_coor[6]['z']),2));
+    var s1r = (Math.atan((wall_coor[8]['z']-wall_coor[6]['z'])/(wall_coor[8]['x']-wall_coor[6]['x'])))*(180/Math.PI);
     //var s1r=angle_rot[0]
 
     var x2l = (wall_coor[3]['x']+wall_coor[1]['x'])/2;
@@ -250,107 +259,134 @@ var sceneEl = document.querySelector('a-scene');
   }
 
 
-  wall_coor=[]
-  angle_rot=[]
-  var slope;
-  store_cord(0,0,wall_coor)
-  roadwidth=10
-  forward={x:0,z:0};
-  left={x:0,z:0};
-  function normalize(forward,slope)
+  function extractNewPoint(x,z,beta,length,newbeta)
   {
-      var val = Math.sqrt(1/(1+Math.pow(slope,2)));
-      x=forward.x
-      z=forward.z
-      a=Math.sqrt(Math.pow(x,2)+Math.pow(z,2))
-      forward.x= forward.x/a
-      forward.z=forward.z/a
-      /*forward.x = val;
-      forward.z = slope*val;*/
-      return forward
+      var response;
+      $.ajax({
+          url: "http://pathgen.herokuapp.com/newpoint",
+          type: "GET",
+          async: false,
+          data: {
+              x:x,
+              z:z,
+              beta:beta,
+              length:length,
+              gennewbeta:newbeta
+
+          },
+          success: function(data) {
+          response = data
+              
+          },
+          error: function(error){
+              console.log(error)
+          }
+      })
+  return response
   }
-  function find_cor(points)
+
+function store_cord(xval,zval,array)
+{
+  array.push({x:xval,z:zval});
+}
+
+function normalize(forward)
+{
+  x=forward.x
+  z=forward.z
+  a=Math.sqrt(Math.pow(x,2)+Math.pow(z,2))
+  forward.x= forward.x/a
+  forward.z=forward.z/a
+  return forward
+}
+
+function find_cor(points)
+{
+  var roadwidth = 10;
+  for (var i=0;i<points.length;i++)
   {
-      for (var i=0;i<points.length;i++)
+  
+      if(i<points.length-1)
       {
-
-            if(i<points.length-1)
-            {
-                forward.x+=(points[i+1].x-points[i].x);
-                forward.z+=(points[i+1].z-points[i].z);
-            }
-            if (i>0)
-            {
-                forward.x+=points[i].x-points[i-1].x;
-                forward.z+=points[i].z-points[i-1].z;
-            }
-            forward=normalize(forward)
-            left.x=-forward.z
-            left.z=forward.x 
-            //console.log(left) 
-            a=points[i].x - (left.x*roadwidth*0.5) 
-            b=points[i].z - (left.z*roadwidth*0.5) 
-            store_cord(a,b,wall_coor)  //Left Coordinates
-            a=points[i].x + (left.x*roadwidth*0.5) 
-            b=points[i].z + (left.z*roadwidth*0.5) 
-            store_cord(a,b,wall_coor)   //Right Coordinates
-        
+          forward.x+=(points[i+1].x-points[i].x);
+          forward.z+=(points[i+1].z-points[i].z);
       }
-      console.log('wall_cordinate: ',wall_coor);
-      build_wall(wall_coor);
-  } 
-
+      if (i>0)
+      {
+          forward.x+=points[i].x-points[i-1].x;
+          forward.z+=points[i].z-points[i-1].z;
+      }
+      forward=normalize(forward)
+      left.x=-forward.z
+      left.z=forward.x 
+      //console.log(left) 
+      a=points[i].x - (left.x*roadwidth*0.5) 
+      b=points[i].z - (left.z*roadwidth*0.5) 
+      store_cord(a,b,wall_coor)  //Left Coordinates
+      a=points[i].x + (left.x*roadwidth*0.5) 
+      b=points[i].z + (left.z*roadwidth*0.5) 
+      store_cord(a,b,wall_coor)   //Right Coordinates
+  }
+  console.log(wall_coor)
+  return wall_coor;
+} 
 
 function apif(){
   $(document).ready(function() {
-    //Initial parameter values
-    var x = 0
-    var z = 0
-    var beta = 1
-    angle_rot.push(beta);
-    var length = 10
-    var newbeta = 1
-    var response    //For retrieving API response 
-    i=4
-    while (i>0)
-    {
-    $.ajax({
-        url: "http://pathgen.herokuapp.com/newpoint",
-        type: "GET",
-        async: false,
-        data: {
-            x:x,
-            z:z,
-            beta:beta,
-            length:length,
-            gennewbeta:newbeta
+           
+            
+    //main......................................    
+     //Initial parameter values
+        var x = 0
+        var y = 0
+        var z = 0
+        var beta = 1
+        var length = 10
+        var newbeta = 1
+        var x_new
+        var z_new
+        points=[]
+        //store_cord(0,0,points)
+        wall_coor=[]
+        
+        roadwidth=2 //width of gallery
+        forward={x:0,z:0};
+        left={x:0,z:0};
 
-        },
-        success: function(data) {
-            response = data
-            
-            
-        },
-        error: function(error){
-            console.log(error)
+        var scene = document.querySelector('a-scene')
+        
+
+        for(var i = 1; i<=10; i++)
+        {
+          //  var line_seg = document.createElement('a-entity')
+            store_cord(x,z,points)
+            var response=extractNewPoint(x,z,beta,length,newbeta)
+            beta = response.new_beta
+            x_new = response.new_point[0]
+            z_new = response.new_point[1]
+                console.log('beta:', beta)
+                console.log('x: ', x)
+                console.log('z:', z)
+
+          /*  line_seg.setAttribute('line__1', {
+                start: {x:x, y:y, z:z},
+                end:{x:x_new, y:y, z:z_new},
+                color: 'blue'
+            })   */
+       //     scene.appendChild(line_seg)
+            x=x_new
+            z=z_new
+        
         }
+        
+
+        store_cord(0,0,wall_coor)
+        wallcords = []
+        wallcords = find_cor(points);
+        build_wall(wallcords);
+
     })
-    i=i-1
-    beta = response.new_beta
-    x = response.new_point[0]
-    z = response.new_point[1]
-    angle_rot.push(beta)
-    console.log('beta:', beta)
-    console.log('x: ', x)
-    console.log('z:', z)
-    store_cord(x,z,points);
-    }
-    find_cor(points)
-    console.log('points : ',points)
-   /* console.log('beta:', beta)
-    console.log('x: ', x)
-    console.log('z:', z)*/
-})
+    
 }
 
 
