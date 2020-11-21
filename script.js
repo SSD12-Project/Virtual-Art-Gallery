@@ -64,10 +64,10 @@ var sceneEl = document.querySelector('a-scene');
       this.geometry = new THREE.BoxBufferGeometry(data.width, data.height, data.depth);
     this.material = new THREE.MeshStandardMaterial({color: data.color});
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    lft1.object3D.position.set(pos, 0, (this.data.mydata[0]));
+    lft.object3D.position.set(pos, 0, (this.data.mydata[0]));
     //entityEl.object3D.position.z += (3*-35);
-    lft1.object3D.rotation.y = THREE.Math.degToRad(-1*this.data.mydata[3]);
-    lft1.setObject3D('mesh', this.mesh);
+    lft.object3D.rotation.y = THREE.Math.degToRad(-1*this.data.mydata[3]);
+    lft.setObject3D('mesh', this.mesh);
     
       console.log('I am ready!');
       console.log(this.data.mydata);
@@ -182,8 +182,8 @@ var sceneEl = document.querySelector('a-scene');
     }
   });
 
-  var curr1 = document.createElement('a-box');
-  var lft1 = document.createElement('a-box');
+  var curr1;// = document.createElement('a-box');
+  var lft1 ;//= document.createElement('a-box');
   var curr2 = document.createElement('a-box');
   var lft2 = document.createElement('a-box');
   var curr3 = document.createElement('a-box');
@@ -232,16 +232,28 @@ var sceneEl = document.querySelector('a-scene');
     var w3r = Math.sqrt(Math.pow((wall_coor[6]['x']-wall_coor[4]['x']),2) + Math.pow((wall_coor[6]['z']-wall_coor[4]['z']),2));
     var s3r = (Math.atan((wall_coor[6]['z']-wall_coor[4]['z'])/(wall_coor[6]['x']-wall_coor[4]['x'])))*(180/Math.PI);
     //var s3r=angle_rot[2]
-
+    for(var i=1; i<=11; i+=2){
+       curr1 = document.createElement('a-box');
+    var x1l = (wall_coor[i+2]['x']+wall_coor[i]['x'])/2;
+    var z1l = (wall_coor[i+2]['z']+wall_coor[i]['z'])/2;
+    var w1l = Math.sqrt(Math.pow((wall_coor[i+2]['x']-wall_coor[i]['x']),2) + Math.pow((wall_coor[i+2]['z']-wall_coor[i]['z']),2));
+    var s1l = (Math.atan((wall_coor[i+2]['z']-wall_coor[i]['z'])/(wall_coor[i+2]['x']-wall_coor[i]['x'])))*(180/Math.PI);
+    //var s1l=angle_rot[0]
     curr1.setAttribute('do-something-once-loaded-1',{mydata:[z1l,x1l,w1l,s1l]});
     sceneEl.appendChild(curr1);
-  
-    
+    }
+    for(var i=2; i<=12; i+=2){
+      lft1 = document.createElement('a-box');
+    var x1r = (wall_coor[i+2]['x']+wall_coor[i]['x'])/2;
+    var z1r = (wall_coor[i+2]['z']+wall_coor[i]['z'])/2;
+    var w1r = Math.sqrt(Math.pow((wall_coor[i+2]['x']-wall_coor[i]['x']),2) + Math.pow((wall_coor[i+2]['z']-wall_coor[i]['z']),2));
+    var s1r = (Math.atan((wall_coor[i+2]['z']-wall_coor[i]['z'])/(wall_coor[i+2]['x']-wall_coor[i]['x'])))*(180/Math.PI);
+   
     lft1.setAttribute('do-something-once-1',{mydata:[z1r,x1r,w1r,s1r]});
     sceneEl.appendChild(lft1);
-  
+    }
     
-    curr2.setAttribute('do-something-once-loaded-2',{mydata:[z2l,x2l,w2l,s2l]});
+    /*curr2.setAttribute('do-something-once-loaded-2',{mydata:[z2l,x2l,w2l,s2l]});
     sceneEl.appendChild(curr2);
   
    
@@ -254,7 +266,7 @@ var sceneEl = document.querySelector('a-scene');
   
    
     lft3.setAttribute('do-something-once-3',{mydata:[z3r,x3r,w3r,s3r]});
-    sceneEl.appendChild(lft3);
+    sceneEl.appendChild(lft3);*/
   
   }
 
