@@ -86,6 +86,40 @@
                     store_cord(a,b,wall_coor)   //Right Coordinates
                 }
                 console.log(wall_coor)
+                if(lastposxl!=0){
+                    var scene = document.querySelector('a-scene')
+                 var start_x = lastposxl;
+                var start_z = lastposzl;
+                var end_x = wall_coor[1].x;
+                var end_z = wall_coor[1].z;
+                 var posx=(start_x+end_x)/2;
+                var posz=(start_z+end_z)/2;
+                var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
+                var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
+                var line_seg3 = document.createElement('a-entity');
+                line_seg3.setAttribute('geometry', {primitive: 'plane', height: '3', width: w1l});
+                line_seg3.setAttribute('material', {side: 'double'});
+                line_seg3.setAttribute('position', {x: posx, y:1.5, z:posz});
+                line_seg3.setAttribute('rotation', {x: 0, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80', repeat:'0.7 0.8', transparent: 'true'});
+                scene.appendChild(line_seg3);
+
+                var start_x = lastposxr;
+                var start_z = lastposzr;
+                var end_x = wall_coor[2].x;
+                var end_z = wall_coor[2].z;
+                 var posx=(start_x+end_x)/2;
+                var posz=(start_z+end_z)/2;
+                var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
+                var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
+                var line_seg3 = document.createElement('a-entity');
+                line_seg3.setAttribute('geometry', {primitive: 'plane', height: '3', width: w1l});
+                line_seg3.setAttribute('material', {side: 'double'});
+                line_seg3.setAttribute('position', {x: posx, y:1.5, z:posz});
+                line_seg3.setAttribute('rotation', {x: 0, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80', repeat:'0.7 0.8', transparent: 'true'});
+                scene.appendChild(line_seg3);
+                }
                 return wall_coor;
             } 
 
@@ -132,7 +166,7 @@
                 {
                     angle=beta
                 }
-               if(i==3){
+               if(i==4){
                    if(flag==0)
                         flag=1;
                     else
@@ -198,12 +232,12 @@
                 var end_x = wallcords[k+2].x;
                 var end_z = wallcords[k+2].z;
                 if(k==6){
-                    lastposxr=start_x;
-                    lastposzr=start_z;
+                    lastposxr=wallcords[k+2].x;
+                    lastposzr=wallcords[k+2].z;
                 }
                 if(k==5){
-                    lastposxl=start_x;
-                    lastposzl=start_z;
+                    lastposxl=wallcords[k+2].x;
+                    lastposzl=wallcords[k+2].z;
                     var cposx=(wallcords[k].x+wallcords[k+1].x)/2;
                     var cposz=(wallcords[k].z+wallcords[k+1].z)/2;
                     var cs1l = (Math.atan((wallcords[k].z-wallcords[k+1].z)/(wallcords[k].x-wallcords[k+1].x)))*(180/Math.PI);
