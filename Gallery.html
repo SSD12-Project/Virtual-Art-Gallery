@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+        <script src="https://unpkg.com/aframe-line-component/dist/aframe-line-component.min.js"></script>
+    </head>
+
+    <body>
+
+    <script>
+     var currx=0 , currz=0,curlx,curlz , curbeta=1, curpox=0,curpoz=0;    
+
+     var flag=0, lastposxl=0, lastposzl=0, lastposxr=0, lastposzr=0;
+
+     var floorl=0, floorr=0;
+
+            function extractNewPoint(x,z,beta,length,newbeta)
+                {
+                    var response;
+                    $.ajax({
+                        url: "http://pathgen.herokuapp.com/newpoint",
+                        type: "GET",
+                        async: false,
+                        data: {
+                            x:x,
+                            z:z,
+                            beta:beta,
+                            length:length,
+                            gennewbeta:newbeta
+
+                        },
+                        success: function(data) {
+                        response = data
+                            
+                        },
+                        error: function(error){
+                            console.log(error)
+                        }
+                    })
+                return response
+                }
+            
+            function store_cord(xval,zval,array)
+            {
+                array.push({x:xval,z:zval});
+            }
+
+            function normalize(forward)
+            {
+                x=forward.x
+                z=forward.z
+                a=Math.sqrt(Math.pow(x,2)+Math.pow(z,2))
+                forward.x= forward.x/a
+                forward.z=forward.z/a
+                return forward
+            }
+
+            function find_cor(points)
+            {
+                roadwidth=5;
+                for (var i=0;i<points.length;i++)
+                {
+                    
+                    if(i<points.length-1)
+                    {
+                        forward.x+=(points[i+1].x-points[i].x);
+                        forward.z+=(points[i+1].z-points[i].z);
+                    }
+                    if (i>0)
+                    {
+                        forward.x+=points[i].x-points[i-1].x;
+                        forward.z+=points[i].z-points[i-1].z;
+                    }
+                    forward=normalize(forward)
+                    left.x=-forward.z
+                    left.z=forward.x 
+                    //console.log(left) 
+                    a=points[i].x - (left.x*roadwidth*0.5) 
+                    b=points[i].z - (left.z*roadwidth*0.5) 
+                    store_cord(a,b,wall_coor)  //Left Coordinates
+                    a=points[i].x + (left.x*roadwidth*0.5) 
+                    b=points[i].z + (left.z*roadwidth*0.5) 
+                    store_cord(a,b,wall_coor)   //Right Coordinates
+                    
+
+                }
+                console.log(wall_coor)
+                if(lastposxl!=0){
+
+                    var scene = document.querySelector('a-scene')
+                    var start_x = floorl;
+                    var start_z = floorr;
+                    var end_x = points[0].x;
+                    var end_z = points[0].z;
+                    var posx=(start_x+end_x)/2;
+                    var posz=(start_z+end_z)/2;
+                    var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
+                    var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
+                    var line_seg3 = document.createElement('a-entity');
+                    line_seg3.setAttribute('geometry', {primitive: 'plane', height: '5', width: w1l+10});
+                    line_seg3.setAttribute('material', {side: 'double'});
+                    line_seg3.setAttribute('position', {x: posx, y:0, z:posz});
+                    line_seg3.setAttribute('rotation', {x: 90, y:-1*s1l, z:0});
+                    line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/32/Mc8kW4x9Q3aRR3RkP5Im_IMG_4417.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80', repeat:'1.2 1.2', transparent: 'true'});
+                    scene.appendChild(line_seg3);
+
+
+                 var start_x = lastposxl;
+                var start_z = lastposzl;
+                var end_x = wall_coor[1].x;
+                var end_z = wall_coor[1].z;
+                 var posx=(start_x+end_x)/2;
+                var posz=(start_z+end_z)/2;
+                var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
+                var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
+                var line_seg3 = document.createElement('a-entity');
+                line_seg3.setAttribute('geometry', {primitive: 'plane', height: '3', width: w1l});
+                line_seg3.setAttribute('material', {side: 'double'});
+                line_seg3.setAttribute('position', {x: posx, y:1.5, z:posz});
+                line_seg3.setAttribute('rotation', {x: 0, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80', repeat:'0.8 0.5', transparent: 'true'});
+                scene.appendChild(line_seg3);
+
+                var start_x = lastposxr;
+                var start_z = lastposzr;
+                var end_x = wall_coor[2].x;
+                var end_z = wall_coor[2].z;
+                 var posx=(start_x+end_x)/2;
+                var posz=(start_z+end_z)/2;
+                var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
+                var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
+                var line_seg3 = document.createElement('a-entity');
+                line_seg3.setAttribute('geometry', {primitive: 'plane', height: '3', width: w1l});
+                line_seg3.setAttribute('material', {side: 'double'});
+                line_seg3.setAttribute('position', {x: posx, y:1.5, z:posz});
+                line_seg3.setAttribute('rotation', {x: 0, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80', repeat:'0.8 0.5', transparent: 'true'});
+                scene.appendChild(line_seg3);
+                }
+                return wall_coor;
+            } 
+
+     
+        function api_f(x,z,beta){
+        $(document).ready(function() {
+            var sceneEl = document.querySelector('a-scene');
+            //console.log(sceneEl.querySelector('a-box'));
+            var el = sceneEl.querySelector('#camid');
+        //main......................................    
+         //Initial parameter values
+            var angle
+           // var x = 0
+            var y = 0
+           // var z = 0
+          //  var beta = 1
+            var length = 10
+            var newbeta = 1
+            var x_new
+            var z_new
+            points=[]
+            //store_cord(0,0,points)
+            wall_coor=[]
+            
+            roadwidth=2 //width of gallery
+            forward={x:0,z:0};
+            left={x:0,z:0};
+
+            var scene = document.querySelector('a-scene')
+            
+
+            for(var i = 1; i<=4; i++)
+            {
+                var line_seg = document.createElement('a-entity')
+                store_cord(x,z,points)
+                var response=extractNewPoint(x,z,beta,length,newbeta)
+                beta = response.new_beta
+                x_new = response.new_point[0]
+                z_new = response.new_point[1]
+                    console.log('beta:', beta)
+                    console.log('x: ', x)
+                    console.log('z:', z)
+                if(i==1)
+                {
+                    angle=beta
+                }
+               if(i==4){
+                   if(flag==0)
+                        flag=1;
+                    else
+                        flag=0;
+                    curpox = x_new;
+                    curpoz = z_new;
+                    curbeta = beta;
+
+
+               }
+               
+                /*line_seg.setAttribute('line__1', {
+                    start: {x:x, y:y, z:z},
+                    end:{x:x_new, y:y, z:z_new},
+                    color: 'blue'
+                })   
+                scene.appendChild(line_seg)*/
+                x=x_new
+                z=z_new
+            }
+            
+
+            store_cord(0,0,wall_coor)
+            wallcords = []
+            wallcords = find_cor(points);
+
+            for(var j=1; j<=8; j+=2)
+            {
+            var left_x = wallcords[j].x;
+            var left_z = wallcords[j].z;
+            var right_x = wallcords[j+1].x;
+            var right_z = wallcords[j+1].z;
+            
+                // console.log(left_x)
+                // console.log(left_z)
+                // console.log(right_x)
+                // console.log(right_z)
+            
+                // $("a-entity").attr("line", "start:"+x+" "+y+" "+z+"; end: "+x_new+" "+y+" "+z_new+"; color:green")
+                // $("a-entity").attr("line2", "start:"+left_x+" "+y+" "+left_z+"; end: "+right_x+" "+y+" "+right_z+"; color:red")
+                //$("a-entity").attr("line", "start:"+x+" "+y+" "+z+"; end: "+x_new+" "+y+" "+z_new+"; color:red")
+                if(j==7){
+                    curlx = wallcords[j].x;
+                    curlz = wallcords[j].z;
+                }
+                if(j==8){
+                    currx = wallcords[j].x;
+                    currz = wallcords[j].z;
+                }
+                
+                /*var line_seg2 = document.createElement('a-entity')
+                line_seg2.setAttribute('line__2', {
+                    start: {x:left_x, y:y, z:left_z},
+                    end:{x:right_x, y:y, z:right_z},
+                    color: 'red'
+                }
+                scene.appendChild(line_seg2)*/
+                
+            }
+           // x=points[2].x
+           // z=points[2].z
+            for(var k=1; k<=6; k++)
+            {
+                var start_x = wallcords[k].x;
+                var start_z = wallcords[k].z;
+                var end_x = wallcords[k+2].x;
+                var end_z = wallcords[k+2].z;
+                if(k==6){
+                    lastposxr=wallcords[k+2].x;
+                    lastposzr=wallcords[k+2].z;
+
+                    floorl=(wallcords[k+1].x+wallcords[k+2].x)/2;
+                    floorr=(wallcords[k+1].z+wallcords[k+2].z)/2;
+                }
+                if(k==5){
+                    lastposxl=wallcords[k+2].x;
+                    lastposzl=wallcords[k+2].z;
+                    var cposx=(wallcords[k].x+wallcords[k+1].x)/2;
+                    var cposz=(wallcords[k].z+wallcords[k+1].z)/2;
+                    
+
+                    var cs1l = (Math.atan((wallcords[k].z-wallcords[k+1].z)/(wallcords[k].x-wallcords[k+1].x)))*(180/Math.PI);
+          //   <a-entity class="collidable" geometry="primitive: box" position="cpox 1.5 cposz"></a-entity>
+             var cline_seg = document.createElement('a-entity');
+                cline_seg.setAttribute('geometry', {primitive: 'plane', height: '3', width: 5});
+                cline_seg.setAttribute('class','collidable');
+                cline_seg.setAttribute('material', {side: 'double', color: 'red', visible: 'false'});
+                cline_seg.setAttribute('position', {x: cposx, y:1.5, z:cposz});
+                cline_seg.setAttribute('rotation', {x: 0, y:-1*cs1l, z:0});
+                scene.appendChild(cline_seg); 
+            }
+                var posx=(start_x+end_x)/2;
+                var posz=(start_z+end_z)/2;
+                var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
+                var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
+                var line_seg3 = document.createElement('a-entity');
+                line_seg3.setAttribute('geometry', {primitive: 'plane', height: '3', width: w1l});
+                line_seg3.setAttribute('material', {side: 'double'});
+                line_seg3.setAttribute('position', {x: posx, y:1.5, z:posz});
+                line_seg3.setAttribute('rotation', {x: 0, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80', repeat:'0.8 0.5', transparent: 'true'});
+                scene.appendChild(line_seg3);
+
+
+                if(k%2==0){
+                    var flrsx=(wallcords[k].x+wallcords[k-1].x)/2;
+                    var flrsz=(wallcords[k].z+wallcords[k-1].z)/2;
+                    var flrex=(wallcords[k+1].x+wallcords[k+2].x)/2;
+                    var flrez=(wallcords[k+1].z+wallcords[k+2].z)/2;
+
+                    var posx=(flrsx+flrex)/2;
+                var posz=(flrez+flrsz)/2;
+                var w1l = Math.sqrt(Math.pow((flrex-flrsx),2) + Math.pow((flrez-flrsz),2));
+                var s1l = (Math.atan((flrez-flrsz)/(flrex-flrsx)))*(180/Math.PI);
+                var line_seg3 = document.createElement('a-entity');
+                line_seg3.setAttribute('geometry', {primitive: 'plane', height: '5', width: w1l});
+                line_seg3.setAttribute('material', {side: 'double'});
+                line_seg3.setAttribute('position', {x: posx, y:0, z:posz});
+                line_seg3.setAttribute('rotation', {x: 90, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/32/Mc8kW4x9Q3aRR3RkP5Im_IMG_4417.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80', repeat:'1.2 1.2', transparent: 'true'});
+                scene.appendChild(line_seg3);
+                }
+            }
+        })
+    }
+   
+     //    el.setAttribute('rotation', {​​​​​​​​x:0, y: 45, z: 0}​​​​​​​​);
+     AFRAME.registerComponent('collider-check', {
+        dependencies: ['raycaster'],
+
+        init: function () {
+            this.el.addEventListener('raycaster-intersection', function () {
+            console.log('Player hit something!');
+           if(flag==1)
+                api_f(curpox,curpoz,curbeta)
+            if(flag==0)
+                flag=1;
+
+        });
+        }
+    });
+    api_f(0,0,1)
+    </script>
+    <a-scene>
+        <a-entity id="player" collider-check>
+            <a-entity  camera id="camid" look-controls wasd-controls raycaster="objects: .collidable; far:1" position="0 1.6 0"></a-entity>
+        </a-entity>
+        <a-assets>
+            <img id="sky" src="https://images.unsplash.com/photo-1520985244272-9d0b8067a4ff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" crossorigin="anonymous">
+        </a-assets>
+        <a-sky material="src: #sky; repeat:0.5 0.5; transparent: true;" ></a-sky>
+    </a-scene>
+
+    </body>
+    
+</html>
