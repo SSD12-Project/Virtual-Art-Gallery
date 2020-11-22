@@ -13,7 +13,9 @@
     <body>
 
     <script>
-         
+     var currx=0 , currz=0,curlx,curlz , curbeta=1, curpox=0,curpoz=0;    
+
+     var flag=0, lastposxl=0, lastposzl=0, lastposxr=0, lastposzr=0;
 
             function extractNewPoint(x,z,beta,length,newbeta)
                 {
@@ -88,7 +90,7 @@
             } 
 
      
-        
+        function api_f(x,z,beta){
         $(document).ready(function() {
             var sceneEl = document.querySelector('a-scene');
             //console.log(sceneEl.querySelector('a-box'));
@@ -96,10 +98,10 @@
         //main......................................    
          //Initial parameter values
             var angle
-            var x = 0
+           // var x = 0
             var y = 0
-            var z = 0
-            var beta = 1
+           // var z = 0
+          //  var beta = 1
             var length = 10
             var newbeta = 1
             var x_new
@@ -115,7 +117,7 @@
             var scene = document.querySelector('a-scene')
             
 
-            for(var i = 1; i<=10; i++)
+            for(var i = 1; i<=4; i++)
             {
                 var line_seg = document.createElement('a-entity')
                 store_cord(x,z,points)
@@ -130,6 +132,15 @@
                 {
                     angle=beta
                 }
+               if(i==3){
+                   if(flag==0)
+                        flag=1;
+                    else
+                        flag=0;
+                   curpox = x_new;
+                   curpoz = z_new;
+                   curbeta = beta;
+               }
                 line_seg.setAttribute('line__1', {
                     start: {x:x, y:y, z:z},
                     end:{x:x_new, y:y, z:z_new},
@@ -144,12 +155,14 @@
             store_cord(0,0,wall_coor)
             wallcords = []
             wallcords = find_cor(points);
-            for(var j=1; j<=20; j+=2)
+
+            for(var j=1; j<=8; j+=2)
             {
             var left_x = wallcords[j].x;
             var left_z = wallcords[j].z;
             var right_x = wallcords[j+1].x;
             var right_z = wallcords[j+1].z;
+            
                 // console.log(left_x)
                 // console.log(left_z)
                 // console.log(right_x)
@@ -158,7 +171,14 @@
                 // $("a-entity").attr("line", "start:"+x+" "+y+" "+z+"; end: "+x_new+" "+y+" "+z_new+"; color:green")
                 // $("a-entity").attr("line2", "start:"+left_x+" "+y+" "+left_z+"; end: "+right_x+" "+y+" "+right_z+"; color:red")
                 //$("a-entity").attr("line", "start:"+x+" "+y+" "+z+"; end: "+x_new+" "+y+" "+z_new+"; color:red")
-
+                if(j==7){
+                    curlx = wallcords[j].x;
+                    curlz = wallcords[j].z;
+                }
+                if(j==8){
+                    currx = wallcords[j].x;
+                    currz = wallcords[j].z;
+                }
                 
                 var line_seg2 = document.createElement('a-entity')
                 line_seg2.setAttribute('line__2', {
@@ -169,30 +189,68 @@
                 scene.appendChild(line_seg2)
                 
             }
-
-            for(var k=1; k<=18; k++)
+           // x=points[2].x
+           // z=points[2].z
+            for(var k=1; k<=6; k++)
             {
                 var start_x = wallcords[k].x;
                 var start_z = wallcords[k].z;
                 var end_x = wallcords[k+2].x;
                 var end_z = wallcords[k+2].z;
+                if(k==6){
+                    lastposxr=start_x;
+                    lastposzr=start_z;
+                }
+                if(k==5){
+                    lastposxl=start_x;
+                    lastposzl=start_z;
+                    var cposx=(wallcords[k].x+wallcords[k+1].x)/2;
+                    var cposz=(wallcords[k].z+wallcords[k+1].z)/2;
+                    var cs1l = (Math.atan((wallcords[k].z-wallcords[k+1].z)/(wallcords[k].x-wallcords[k+1].x)))*(180/Math.PI);
+          //   <a-entity class="collidable" geometry="primitive: box" position="cpox 1.5 cposz"></a-entity>
+             var cline_seg = document.createElement('a-entity');
+                cline_seg.setAttribute('geometry', {primitive: 'plane', height: '3', width: 5});
+                cline_seg.setAttribute('class','collidable');
+                cline_seg.setAttribute('material', {side: 'double', color: 'red'});
+                cline_seg.setAttribute('position', {x: cposx, y:1.5, z:cposz});
+                cline_seg.setAttribute('rotation', {x: 0, y:-1*cs1l, z:0});
+                scene.appendChild(cline_seg); 
+            }
                 var posx=(start_x+end_x)/2;
                 var posz=(start_z+end_z)/2;
                 var w1l = Math.sqrt(Math.pow((end_x-start_x),2) + Math.pow((end_z-start_z),2));
                 var s1l = (Math.atan((end_z-start_z)/(end_x-start_x)))*(180/Math.PI);
                 var line_seg3 = document.createElement('a-entity');
                 line_seg3.setAttribute('geometry', {primitive: 'plane', height: '3', width: w1l});
-                line_seg3.setAttribute('material', {side: 'double', color: 'green'});
+                line_seg3.setAttribute('material', {side: 'double'});
                 line_seg3.setAttribute('position', {x: posx, y:1.5, z:posz});
                 line_seg3.setAttribute('rotation', {x: 0, y:-1*s1l, z:0});
+                line_seg3.setAttribute('material', {src: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80', repeat:'0.7 0.8', transparent: 'true'});
                 scene.appendChild(line_seg3);
             }
         })
-         el.setAttribute('rotation', {​​​​​​​​x:0, y: 45, z: 0}​​​​​​​​);
+    }
+   
+     //    el.setAttribute('rotation', {​​​​​​​​x:0, y: 45, z: 0}​​​​​​​​);
+     AFRAME.registerComponent('collider-check', {
+        dependencies: ['raycaster'],
+
+        init: function () {
+            this.el.addEventListener('raycaster-intersection', function () {
+            console.log('Player hit something!');
+           if(flag==1)
+                api_f(curpox,curpoz,curbeta)
+            if(flag==0)
+                flag=1;
+
+        });
+        }
+    });
+    api_f(0,0,1)
     </script>
     <a-scene>
         <a-entity id="player" collider-check>
-            <a-entity  id="camid" look-controls wasd-controls raycaster="objects: .collidable" position="0 0 0"></a-entity>
+            <a-entity  camera id="camid" look-controls wasd-controls raycaster="objects: .collidable; far:1" position="0 1.6 0"></a-entity>
         </a-entity>
     </a-scene>
 
